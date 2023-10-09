@@ -1,0 +1,22 @@
+- name: Weave net install CNI
+  shell: kubectl apply -f https://github.com/weaveworks/weave/releases/download/{{ WEAVE_VERSION }}/weave-daemonset-k8s.yaml
+
+- name: Install Metrics Server
+  shell: kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
+
+- name: Create .kube directory
+  file:
+    path: /home/ubuntu/.kube
+    state: directory
+    owner: ubuntu
+    group: ubuntu
+    mode: 0775
+
+- name: Copy kubeconfig
+  ansible.builtin.copy:
+    src: /etc/kubernetes/admin.conf
+    dest: /home/ubuntu/.kube/config
+    remote_src: yes
+    owner: ubuntu
+    group: ubuntu
+    mode: 0660
